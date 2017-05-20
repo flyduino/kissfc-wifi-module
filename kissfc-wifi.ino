@@ -61,11 +61,20 @@ void processSerial() {
     }
     if (recBytes > 1 && minBytes > 0 && recBytes == minBytes) {
       uint32_t checksum = 0;
+      uint8_t checksum2 = 0;
       for (int i = 2; i < (minBytes-1); i++) {
-        checksum += serialBuf[i];
+        checksum += serialBuf[i];  // old checksum
+        checksum2 ^= serialBuf[i]; // new checksum
+        for (int j = 0; j < 8; j++) {
+          if ((checksum2 & 0x80) != 0) {
+            checksum2 = (uint8_t) ((checksum2 << 1) ^ 0xD5);
+          } else {
+            checksum2 <<= 1;
+           }
+        }
       }
       uint8_t cs = checksum / (uint16_t)(minBytes - 3);
-      if (cs == serialBuf[recBytes - 1]) {
+      if ((cs == serialBuf[recBytes - 1]) || (checksum2 == serialBuf[recBytes - 1])) {
           packetSize = minBytes;
           memcpy(packetBuf, serialBuf, packetSize);
           packetReceived = 1;

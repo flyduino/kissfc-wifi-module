@@ -13,7 +13,7 @@
 #ifndef WIFI_MANAGER_H
 #define WIFI_MANAGER_H
 
-#define FW_VERSION F("v1.0.1")
+#define FW_VERSION F("v1.0.2")
 
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
