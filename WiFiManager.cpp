@@ -131,6 +131,8 @@ void WiFiManager::startWeb() {
   server->on("/r", std::bind(&WiFiManager::handleReset, this));
   //server->on("/generate_204", std::bind(&WiFiManager::handle204, this));  //Android/Chrome OS captive portal check.
   server->on("/fwlink", std::bind(&WiFiManager::handleRoot, this));  //Microsoft captive portal. Maybe not needed. Might be handled by notFound handler.
+  //server->on("/library/test/success.html", std::bind(&WiFiManager::handleApple, this));  //Apple captive portal. Maybe not needed. Might be handled by notFound handler.
+  //server->on("/hotspot-detect.html", std::bind(&WiFiManager::handleApple, this));  //Apple captive portal. Maybe not needed. Might be handled by notFound handler.
   
   //// update server
   server->on("/update", HTTP_GET, std::bind(&WiFiManager::handleUpdateForm, this));
@@ -412,6 +414,13 @@ void WiFiManager::setMinimumSignalQuality(int quality) {
 void WiFiManager::setBreakAfterConfig(boolean shouldBreak) {
   _shouldBreakAfterConfig = shouldBreak;
 }
+
+/** Apple phone home url */
+void WiFiManager::handleApple() {
+  DEBUG_WM(F("Handle apple"));
+  server->send(200, "text/html", "Success");
+}
+
 
 /** Handle root or redirect to captive portal */
 void WiFiManager::handleRoot() {
